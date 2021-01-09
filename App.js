@@ -8,7 +8,8 @@ export default function App() {
   // const [enteredGoal, setEnteredGoal] = useState("")
   const [courseGoals, setCourseGoals] = useState([])
   const [isAddMode, setIsAddMode] = useState(false)
-
+  console.log("Rerendering Component!")
+  console.log("Course Goals:", courseGoals)
   // const goalInputHandler = (enteredText) => {
   //   setEnteredGoal(enteredText)
   // }
@@ -16,18 +17,28 @@ export default function App() {
   const addGoalHandler = (goalTitle) => {
     // console.log(enteredGoal)
     // setCourseGoals((currentGoals) => [...currentGoals, enteredGoal])
+    if (goalTitle.length === 0) {
+      return
+    }
     setCourseGoals((currentGoals) => [
       ...currentGoals,
       { id: Math.random().toString(), value: goalTitle },
     ])
+    setIsAddMode(false) //the two state changes are rerendered in the same cycle
   }
 
   const deleteHandler = (goalId) => {
-    console.log("Delete handler")
+    console.log("To be deleted:", goalId)
+    console.log("Course Goals in Delete Handler:", courseGoals)
     setCourseGoals((currentGoals) => {
       return currentGoals.filter((goal) => goal.id !== goalId)
     })
   }
+
+  const cancelGoalAdditionHandler = () => {
+    setIsAddMode(false)
+  }
+
   return (
     <View style={styles.screen}>
       <Button title="Add New Goal" onPress={() => setIsAddMode(true)} />
@@ -40,7 +51,11 @@ export default function App() {
         />
         <Button title="ADD" onPress={addGoalHandler} />
       </View> */}
-      <GoalInput visible={isAddMode} onAddGoal={addGoalHandler} />
+      <GoalInput
+        onCancel={cancelGoalAdditionHandler}
+        visible={isAddMode}
+        onAddGoal={addGoalHandler}
+      />
       <FlatList
         // keyExtractor={(item, index) => item.id  }
         data={courseGoals}
